@@ -1,0 +1,18 @@
+ARCH := arm64-v8a
+SDK_VERSION := $(shell adb shell getprop ro.build.version.sdk)
+
+all: build
+
+build: 
+	bash /mnt/c/Users/thinkycx/AppData/Local/Android/Sdk/ndk-bundle/build/ndk-build NDK_PROJECT_PATH=./ APP_BUILD_SCRIPT=./Android.mk APP_ABI=$(ARCH) APP_PLATFORM=android-$(SDK_VERSION) NDK_APPLICATION_MK=Application.mk
+
+push: build
+	adb push libs/$(ARCH)/one /data/local/tmp/8890
+	adb shell 'chmod 777 /data/local/tmp/8890'
+
+run: push build
+	adb shell /data/local/tmp/8890
+clean:
+	rm -rf libs
+	rm -rf obj
+

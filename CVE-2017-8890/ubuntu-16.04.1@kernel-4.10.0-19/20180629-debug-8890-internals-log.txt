@@ -1,0 +1,490 @@
+[New Thread 928]
+[New Thread 804]
+[New Thread 806]
+[New Thread 819]
+[New Thread 880]
+[New Thread 914]
+[New Thread 931]
+[New Thread 843]
+[New Thread 884]
+[New Thread 886]
+[New Thread 901]
+[New Thread 904]
+[New Thread 894]
+[New Thread 918]
+[New Thread 920]
+[New Thread 905]
+[New Thread 915]
+[New Thread 917]
+[New Thread 921]
+[New Thread 926]
+[New Thread 946]
+[New Thread 972]
+[New Thread 988]
+[New Thread 989]
+[New Thread 990]
+[New Thread 994]
+[New Thread 996]
+[New Thread 997]
+[New Thread 1001]
+[New Thread 1002]
+[New Thread 1003]
+[New Thread 1004]
+[New Thread 1005]
+[New Thread 1009]
+[New Thread 1010]
+[New Thread 1063]
+[New Thread 1066]
+[New Thread 1223]
+[New Thread 1233]
+[New Thread 1234]
+[New Thread 1235]
+[New Thread 1236]
+[New Thread 1241]
+[New Thread 1242]
+[New Thread 1243]
+[New Thread 1249]
+[New Thread 1250]
+[New Thread 1342]
+[New Thread 1343]
+[New Thread 1346]
+[New Thread 1478]
+[New Thread 1252]
+[New Thread 1278]
+[New Thread 1279]
+[New Thread 1330]
+[New Thread 1281]
+[New Thread 1295]
+[New Thread 1296]
+[New Thread 1303]
+[New Thread 1305]
+[New Thread 1306]
+[New Thread 1307]
+[New Thread 1315]
+[New Thread 1325]
+[New Thread 1326]
+[New Thread 1327]
+[New Thread 1328]
+[New Thread 1333]
+[New Thread 1332]
+[New Thread 1339]
+[New Thread 1344]
+[New Thread 1345]
+[New Thread 1348]
+[New Thread 1349]
+[New Thread 1350]
+[New Thread 1354]
+[New Thread 1357]
+[New Thread 1359]
+[New Thread 1439]
+[New Thread 1440]
+[New Thread 1476]
+[New Thread 1361]
+[New Thread 1367]
+[New Thread 1371]
+[New Thread 1375]
+[New Thread 1362]
+[New Thread 1369]
+[New Thread 1372]
+[New Thread 1374]
+[New Thread 1363]
+[New Thread 1387]
+[New Thread 1395]
+[New Thread 1403]
+[New Thread 1364]
+[New Thread 1391]
+[New Thread 1392]
+[New Thread 1397]
+[New Thread 1365]
+[New Thread 1412]
+[New Thread 1413]
+[New Thread 1425]
+[New Thread 1366]
+[New Thread 1393]
+[New Thread 1396]
+[New Thread 1407]
+[New Thread 1373]
+[New Thread 1376]
+[New Thread 1377]
+[New Thread 1378]
+[New Thread 1385]
+[New Thread 1382]
+[New Thread 1401]
+[New Thread 1406]
+[New Thread 1411]
+[New Thread 1457]
+[New Thread 1460]
+[New Thread 1461]
+[New Thread 1420]
+[New Thread 1427]
+[New Thread 1421]
+[New Thread 1422]
+[New Thread 1423]
+[New Thread 1462]
+[New Thread 1463]
+[New Thread 1464]
+[New Thread 1539]
+[New Thread 1540]
+[New Thread 1543]
+[New Thread 1571]
+[New Thread 1572]
+
+Thread 39 received signal SIGTRAP, Trace/breakpoint trap.
+[Switching to Thread 1573]
+Warning: not running or target is remote
+kgdb_breakpoint ()
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/kernel/debug/debug_core.c:1072
+1072		wmb(); /* Sync point after breakpoint */
+gdb-peda$ c
+Continuing.
+[   66.463128] sysrq: SysRq : DEBUG
+
+Thread 39 received signal SIGTRAP, Trace/breakpoint trap.
+Warning: not running or target is remote
+kgdb_breakpoint ()
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/kernel/debug/debug_core.c:1072
+1072		wmb(); /* Sync point after breakpoint */
+gdb-peda$ source bps
+Breakpoint 1 at 0xffffffff8183155b: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c, line 2128.
+Breakpoint 2 at 0xffffffff81831560: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c, line 2129.
+Breakpoint 3 at 0xffffffff817fb491: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/inet_connection_sock.c, line 656.
+Breakpoint 4 at 0xffffffff817fb496: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/inet_connection_sock.c, line 658.
+Breakpoint 5 at 0xffffffff81832eec: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c, line 2602.
+Breakpoint 6 at 0xffffffff81832f37: file /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c, line 2612.
+gdb-peda$ debugtag -2 bps
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -3 start to run poc now!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ c
+Continuing.
+[New Thread 1590]
+[New Thread 1589]
+[Switching to Thread 1590]
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 1, 0xffffffff8183155b in ip_mc_join_group (sk=0xffff880079366000, 
+    imr=0xffffc900033a3d68)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2128
+warning: Source file is more recent than executable.
+2128		iml = sock_kmalloc(sk, sizeof(*iml), GFP_KERNEL);
+gdb-peda$ debugtag -4 this  is the vulnerable obj iml  ip_mc_socklist
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/3i $pc
+=> 0xffffffff8183155b <ip_mc_join_group+171>:	call   0xffffffff8178f410 <sock_kmalloc>
+   0xffffffff81831560 <ip_mc_join_group+176>:	test   rax,rax
+   0xffffffff81831563 <ip_mc_join_group+179>:	je     0xffffffff818315ce <ip_mc_join_group+286>
+gdb-peda$ c
+Continuing.
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 2, ip_mc_join_group (sk=0xffff880079366000, imr=0xffffc900033a3d68)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2129
+2129		if (!iml)
+gdb-peda$ x/3i $pc
+=> 0xffffffff81831560 <ip_mc_join_group+176>:	test   rax,rax
+   0xffffffff81831563 <ip_mc_join_group+179>:	je     0xffffffff818315ce <ip_mc_join_group+286>
+   0xffffffff81831565 <ip_mc_join_group+181>:	mov    rdx,QWORD PTR [r14]
+gdb-peda$ telescope  $rax
+Warning: not running or target is remote
+0000| 0xffff880077da1880 --> 0x77da1d80 
+0004| 0xffff880077da1884 --> 0xffff8800 
+0008| 0xffff880077da1888 --> 0x77da1888 
+0012| 0xffff880077da188c --> 0xffff8800 
+0016| 0xffff880077da1890 --> 0x77da1888 
+0020| 0xffff880077da1894 --> 0xffff8800 
+0024| 0xffff880077da1898 --> 0x0 
+0028| 0xffff880077da189c --> 0x0 
+gdb-peda$ debugtag -5 iml content
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx  $rax
+0xffff880077da1880:	0xffff880077da1d80	0xffff880077da1888
+0xffff880077da1890:	0xffff880077da1888	0x0000000000000000
+0xffff880077da18a0:	0x0000000000000000	0xffff88005ce05900
+gdb-peda$ c
+Continuing.
+[New Thread 1593]
+[Switching to Thread 1593]
+Warning: not running or target is remote
+
+Thread 322 hit Breakpoint 3, inet_csk_clone_lock (sk=0xffff880079366000, req=0xffff880078e89110, 
+    priority=0x1080020)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/inet_connection_sock.c:656
+warning: Source file is more recent than executable.
+656		struct sock *newsk = sk_clone_lock(sk, priority);
+gdb-peda$ debugtag -7 sk value 0xffff880079366000
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880079366000+0x310
+0xffff880079366310:	0xffff880077da1880	0x0000000000000000
+0xffff880079366320:	0x0000000000000000	0x0000000000000000
+0xffff880079366330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -8 iml is in sk 0xffff880079366000+0x310
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/3i $pc
+=> 0xffffffff817fb491 <inet_csk_clone_lock+17>:	call   0xffffffff81792910 <sk_clone_lock>
+   0xffffffff817fb496 <inet_csk_clone_lock+22>:	test   rax,rax
+   0xffffffff817fb499 <inet_csk_clone_lock+25>:	mov    rbx,rax
+gdb-peda$ ni
+Warning: not running or target is remote
+
+Thread 322 hit Breakpoint 4, inet_csk_clone_lock (sk=<optimized out>, req=0xffff880078e89110, 
+    priority=<optimized out>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/inet_connection_sock.c:658
+658		if (newsk) {
+gdb-peda$ debugtag -8 copy sk -> newsk ,addr is in rax
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ telescope  $rax
+Warning: not running or target is remote
+0000| 0xffff880079367000 --> 0x0 
+0004| 0xffff880079367004 --> 0x0 
+0008| 0xffff880079367008 --> 0x0 
+0012| 0xffff88007936700c --> 0x1a0a0000 
+0016| 0xffff880079367010 --> 0x400a0002 
+0020| 0xffff880079367014 --> 0x0 
+0024| 0xffff880079367018 --> 0x0 
+0028| 0xffff88007936701c --> 0x0 
+gdb-peda$ x/6gx 0xffff880079367000
+0xffff880079367000:	0x0000000000000000	0x1a0a000000000000
+0xffff880079367010:	0x00000000400a0002	0x0000000000000000
+0xffff880079367020:	0xffff880077da17a8	0xffffffff81f314a0
+gdb-peda$ debugtag -9 let's see newsk->iml 
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880079367000+0x310
+0xffff880079367310:	0xffff880077da1880	0x0000000000000000
+0xffff880079367320:	0x0000000000000000	0x0000000000000000
+0xffff880079367330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -9 let's see sk->iml  before
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880079366000
+0xffff880079366000:	0x0000000000000000	0x1a0a000000000000
+0xffff880079366010:	0x00000000400a0002	0x0000000000000000
+0xffff880079366020:	0xffff880077da17a8	0xffffffff81f314a0
+gdb-peda$ x/6gx 0xffff880079366000+0x310
+0xffff880079366310:	0xffff880077da1880	0x0000000000000000
+0xffff880079366320:	0x0000000000000000	0x0000000000000000
+0xffff880079366330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -10 0xffff880077da1880 iml addr is in newsk and sk !
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -10 0xffff880077da1880 iml addr is in newsk and sk !
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -10 0xffff880077da1880 iml addr is in newsk and sk !
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -10 0xffff880077da1880 iml addr is in newsk and sk !
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ c
+Continuing.
+[New Thread 1595]
+[New Thread 1598]
+[New Thread 1600]
+[Switching to Thread 1590]
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 5, 0xffffffff81832eec in ip_mc_drop_socket (sk=0xffff880079367000)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2602
+2602		while ((iml = rtnl_dereference(inet->mc_list)) != NULL) {
+gdb-peda$ debugtag -11 0xffff880079367000 is newsk ,it is going to be closed
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -12 let's see the iml in newsk
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/3i $pc
+=> 0xffffffff81832eec <ip_mc_drop_socket+60>:	test   rbx,rbx
+   0xffffffff81832eef <ip_mc_drop_socket+63>:	je     0xffffffff81832f49 <ip_mc_drop_socket+153>
+   0xffffffff81832ef1 <ip_mc_drop_socket+65>:	mov    rax,QWORD PTR [rbx]
+gdb-peda$ x/6gx $rbx
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0x0000000000000000	0xffff88005ce05900
+gdb-peda$ x/6gx 0xffff880079367000+0x310
+0xffff880079367310:	0xffff880077da1880	0x0000000000000000
+0xffff880079367320:	0x0000000000000000	0x0000000000000000
+0xffff880079367330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -11 newsk 's iml is in , the content is above!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ c
+Continuing.
+[New Thread 1602]
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 6, 0xffffffff81832f37 in ip_mc_drop_socket (sk=0xffff880079367000)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2612
+2612			kfree_rcu(iml, rcu);
+gdb-peda$ x/3i $pc
+=> 0xffffffff81832f37 <ip_mc_drop_socket+135>:	call   0xffffffff810f4a40 <kfree_call_rcu>
+   0xffffffff81832f3c <ip_mc_drop_socket+140>:	mov    rbx,QWORD PTR [r12+0x310]
+   0xffffffff81832f44 <ip_mc_drop_socket+148>:	test   rbx,rbx
+gdb-peda$ debugtag -12 notice ! it's kfree_call_rcu, params 1st is iml+0x20 (head)
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ telescope  $rdi-0x20
+Warning: not running or target is remote
+0000| 0xffff880077da1880 --> 0x0 
+0004| 0xffff880077da1884 --> 0x0 
+0008| 0xffff880077da1888 --> 0xa0a02e0 
+0012| 0xffff880077da188c --> 0x0 
+0016| 0xffff880077da1890 --> 0x2 
+0020| 0xffff880077da1894 --> 0x0 
+0024| 0xffff880077da1898 --> 0x0 
+0028| 0xffff880077da189c --> 0x0 
+gdb-peda$ x/6gx   $rdi-0x20
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0x0000000000000000	0xffff88005ce05900
+gdb-peda$ x/6gx   $rdi
+0xffff880077da18a0:	0x0000000000000000	0xffff88005ce05900
+0xffff880077da18b0:	0x0000000000000028	0x0000000000000000
+0xffff880077da18c0:	0xffff880077da1940	0xffff880077da18c8
+gdb-peda$ debugtag -13 newsk is goint to be closed. newsk's iml will be freed after kfree_rcu
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -14 see newsk+0x310 again and iml content again
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880079367000
+0xffff880079367000:	0x0100007f0100007f	0x1a0a99c5adf37aa3
+0xffff880079367010:	0x0000000040080002	0xffff880079366018
+0xffff880079367020:	0xffff880077da17a8	0xffffffff81f314a0
+gdb-peda$ x/6gx 0xffff880079367000+0x310
+0xffff880079367310:	0x0000000000000000	0x0000000000000000
+0xffff880079367320:	0x0000000000000000	0x0000000000000000
+0xffff880079367330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ x/6gx 0xffff880077da1880
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0x0000000000000000	0xffff88005ce05900
+gdb-peda$ debugtag -15 newsk+0x310 is clear. and iml is still here.
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ c
+Continuing.
+[New Thread 1604]
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 5, 0xffffffff81832eec in ip_mc_drop_socket (sk=0xffff880079366000)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2602
+2602		while ((iml = rtnl_dereference(inet->mc_list)) != NULL) {
+gdb-peda$ debugtag -16 noice it is sk 0xffff880079366000 ,newsk's father!!!
+debugtag -16 noice it is sk 0xffff880079366000 ,newsk's fatherc!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/3i $pc
+=> 0xffffffff81832eec <ip_mc_drop_socket+60>:	test   rbx,rbx
+   0xffffffff81832eef <ip_mc_drop_socket+63>:	je     0xffffffff81832f49 <ip_mc_drop_socket+153>
+   0xffffffff81832ef1 <ip_mc_drop_socket+65>:	mov    rax,QWORD PTR [rbx]
+gdb-peda$ x/6gx $rbx
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0xffff880077842300	0x0000000000000020
+gdb-peda$ debugtag -17 the iml sees to be changed ! it maybe filled in by other data
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -18 let's see sk+0x310 if &iml is still in?
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ s/6gx 0xffff880079366000+0x310
+A syntax error in expression, near `/6gx 0xffff880079366000+0x310'.
+gdb-peda$ x/6gx 0xffff880079366000+0x310
+0xffff880079366310:	0xffff880077da1880	0x0000000000000000
+0xffff880079366320:	0x0000000000000000	0x0000000000000000
+0xffff880079366330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -17 sk'iml is still there!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880077da1880
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0xffff880077842300	0x0000000000000020
+gdb-peda$ c
+Continuing.
+Warning: not running or target is remote
+
+Thread 320 hit Breakpoint 6, 0xffffffff81832f37 in ip_mc_drop_socket (sk=0xffff880079366000)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/net/ipv4/igmp.c:2612
+2612			kfree_rcu(iml, rcu);
+gdb-peda$ x/3i $pc
+=> 0xffffffff81832f37 <ip_mc_drop_socket+135>:	call   0xffffffff810f4a40 <kfree_call_rcu>
+   0xffffffff81832f3c <ip_mc_drop_socket+140>:	mov    rbx,QWORD PTR [r12+0x310]
+   0xffffffff81832f44 <ip_mc_drop_socket+148>:	test   rbx,rbx
+gdb-peda$ x/6gx $rdi
+0xffff880077da18a0:	0xffff880077842300	0x0000000000000020
+0xffff880077da18b0:	0x0000000000000028	0x0000000000000000
+0xffff880077da18c0:	0xffff880077da1880	0xffff880077da18c8
+gdb-peda$ x/6gx $rdi-0x20
+0xffff880077da1880:	0x0000000000000000	0x000000000a0a02e0
+0xffff880077da1890:	0x0000000000000002	0x0000000000000000
+0xffff880077da18a0:	0xffff880077842300	0x0000000000000020
+gdb-peda$ x/6gx 0xffff880079366000+0x310
+0xffff880079366310:	0x0000000000000000	0x0000000000000000
+0xffff880079366320:	0x0000000000000000	0x0000000000000000
+0xffff880079366330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -18 sk'iml seems to be freed also!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -19 but the iml is going to be freed by kfree_rcu!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -20 double free!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ c
+Continuing.
+[ 1110.614867] BUG: unable to handle kernel NULL pointer dereference at 0000000000000150
+[ 1110.817983] IP: find_css_set+0x369/0x4b0
+[ 1110.928545] PGD 0 
+[ 1110.928547] 
+[ 1111.048159] Oops: 0000 [#1] SMP
+[New Thread 1607]
+[New Thread 1606]
+
+Thread 328 received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1607]
+Warning: not running or target is remote
+0xffffffff811245f9 in find_css_set (old_cset=<optimized out>, cgrp=0x0 <irq_stack_union>)
+    at /build/linux-hwe-edge-gyUj63/linux-hwe-edge-4.10.0/kernel/cgroup.c:1117
+warning: Source file is more recent than executable.
+1117			link_css_set(&tmp_links, cset, c);
+gdb-peda$ debugtag -21 I don't known why it will crash here! However, it seems to have some reasons with the double free of sk'iml and newsk'iml!
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ x/6gx 0xffff880077da1880
+0xffff880077da1880:	0x0000000000000000	0x0000000000000000
+0xffff880077da1890:	0xffffc90000343c70	0xffff8800798be020
+0xffff880077da18a0:	0x0000000000000000	0x0000000000000000
+gdb-peda$ x/6gx 0xffff880079366000
+0xffff880079366000:	0x0000000000000000	0x1a0a000000000000
+0xffff880079366010:	0x00000000400a0002	0x0000000000000000
+0xffff880079366020:	0xffff880077da17a8	0xffffffff81f314a0
+gdb-peda$ x/6gx 0xffff880079366000+0x310
+0xffff880079366310:	0x0000000000000000	0x0000000000000000
+0xffff880079366320:	0x0000000000000000	0x0000000000000000
+0xffff880079366330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ x/6gx 0xffff880079367000
+0xffff880079367000:	0x0100007f0100007f	0x000099c5adf37aa3
+0xffff880079367010:	0x0000000040070002	0xffff880079366018
+0xffff880079367020:	0xffff880077da17a8	0xffffffff81f314a0
+gdb-peda$ x/6gx 0xffff880079367000+0x310
+0xffff880079367310:	0x0000000000000000	0x0000000000000000
+0xffff880079367320:	0x0000000000000000	0x0000000000000000
+0xffff880079367330:	0x0000000000000000	0x0000000000000000
+gdb-peda$ debugtag -22 above is previous add of the iml , sk and sk'iml , newsk and newsk'iml.
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -23 done!!!!
+debugtag -23 donedebugtag -22 above is previous add of the iml , sk and sk'iml , newsk and newsk'iml.debugtag -22 above is previous add of the iml , sk and sk'iml , newsk and newsk'iml.
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ debugtag -24 see you later!!! @thinkycx 2018-06-29 17:00
+debugtag -24 see you laterdebugtag -23 donedebugtag -22 above is previous add of the iml , sk and sk'iml , newsk and newsk'iml.debugtag -22 above is previous add of the iml , sk and sk'iml , newsk! @thinkycx 2018-06-29 17:00
+Undefined command: "debugtag".  Try "help".
+gdb-peda$ bye!
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ 
+Undefined command: "bye".  Try "help".
+gdb-peda$ exit
+Undefined command: "exit".  Try "help".
+gdb-peda$ quit
+warning: Could not rename /usr/lib/debug/boot/.gdb_history-gdb76838~ to /usr/lib/debug/boot/.gdb_history: No such file or directory
+➜  boot ls
+bps  config  mc_list  vmlinux-4.10.0-19-generic  vmlinux-4.4.0-21-generic
+➜  boot 
+

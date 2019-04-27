@@ -1,0 +1,11 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := fb_mem.c
+
+LOCAL_MODULE := libfb_mem_exploit
+
+LOCAL_MODULE_TAGS := optional
+
+include $(BUILD_STATIC_LIBRARY)

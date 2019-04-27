@@ -1,0 +1,13 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+  perf_event.c \
+  perf_swevent.c \
+
+LOCAL_MODULE := libperf_event_exploit
+LOCAL_MODULE_TAGS := optional
+LOCAL_C_INCLUDES := device_database
+
+include $(BUILD_STATIC_LIBRARY)
