@@ -1,8 +1,55 @@
 
+Congratulations, you Got Root!
 
-# Android_kernel_Vul
 
-[TOC]
+
+Android kernel exploit
+=================
+
+
+[Zimperlich](#zimperlich)
+[CVE-2009-2692(Wunderbar/asroot)](#cve-2009-2692wunderbarasroot)
+[RageAgainstTheCage(adbd setuid)](#rageagainstthecageadbd-setuid)
+[CVE-2009-1185 Exploid](#cve-2009-1185-exploid)
+[CVE-2009-2692(Wunderbar/asroot)](#cve-2009-2692wunderbarasroot-1)
+[CVE-2011-1149  KillingInTheNameOf](#cve-2011-1149--killinginthenameof)
+[CVE-2011-1823(GingerBreak)](#cve-2011-1823gingerbreak)
+[CVE-2011-3874(zergRush)](#cve-2011-3874zergrush)
+[CVE-2011-1823(GingerBreak)](#cve-2011-1823gingerbreak-1)
+[Exynos-abuse](#exynos-abuse)
+[CVE-2012-0056(mempodroid)](#cve-2012-0056mempodroid)
+[CVE-2012-4220(diag)](#cve-2012-4220diag)
+[CVE-2012-6422 exynos-mem](#cve-2012-6422-exynos-mem)
+[CVE-2013-2094(linux kernel3.8.9之前开启了PERF_EVENT的设备)](#cve-2013-2094linux-kernel389之前开启了perf_event的设备)
+[CVE-2013-2595](#cve-2013-2595)
+[CVE-2013-6282](#cve-2013-6282)
+[CVE-2013-6123](#cve-2013-6123)
+[CVE-2013-6282](#cve-2013-6282-1)
+[CVE-2013-6774](#cve-2013-6774)
+[CVE-2014-0196](#cve-2014-0196)
+[CVE-2014-2273](#cve-2014-2273)
+[CVE-2014-3153](#cve-2014-3153)
+[CVE-2014-4321](#cve-2014-4321)
+[CVE-2014-4322](#cve-2014-4322)
+[CVE-2014-4323](#cve-2014-4323)
+[CVE-2014-4324](#cve-2014-4324)
+[CVE-2014-7911 CVE-2014-4322 配套使用的root](#cve-2014-7911-cve-2014-4322-配套使用的root)
+[CVE-2014-0975 CVE-2014-0976](#cve-2014-0975-cve-2014-0976)
+[CVE-2014-9322](#cve-2014-9322)
+[CVE-2015-0569](#cve-2015-0569)
+[CVE-2015-1805](#cve-2015-1805)
+[CVE-2015-3636](#cve-2015-3636)
+[CVE-2016-2434](#cve-2016-2434)
+[CVE-2016-2443](#cve-2016-2443)
+[CVE-2016-3842](#cve-2016-3842)
+[CVE-2016-3935 CVE-2016-6738](#cve-2016-3935-cve-2016-6738)
+[CVE-2016-5195](#cve-2016-5195)
+[CVE-2016-5342](#cve-2016-5342)
+[CVE-2017-8890](#cve-2017-8890)
+[SVE-2017-10086](#sve-2017-10086)
+[CVE-2017-10661](#cve-2017-10661)
+
+
 
 
 ### 0x00 常见内核漏洞分析
@@ -127,7 +174,7 @@ https://bbs.pediy.com/thread-208066.htm
 pingpong该漏洞是Linux kernel的ping套接字上存在的一个Use-After-Free漏洞。
 https://github.com/fi01/CVE-2015-3636  32位
 
-
+[cve-2015-6620学习总结](https://bbs.pediy.com/thread-226699.htm)
 
 #### CVE-2016-2434
 Android 2016-05-01版本，NVIDIA Video Driver存在权限提升漏洞，攻击者通过构造的应用，可获取提升的权限。
@@ -136,6 +183,10 @@ Android 2016-05-01版本，NVIDIA Video Driver存在权限提升漏洞，攻击�
 #### CVE-2016-2443
 Qualcomm MSM debugfs内核任意地址写入漏洞分析  
 https://www.freebuf.com/vuls/103583.html
+
+#### CVE-2016-3842
+[危害9亿安卓设备高通漏洞细节曝光（CVE-2016-3842,含POC）](http://www.hackdig.com/08/hack-38388.htm)
+[实现CVE-2016-3842的堆喷](https://bbs.pediy.com/thread-218194.htm)
 
 #### CVE-2016-3935 CVE-2016-6738
 CVE-2016-3935 和 CVE-2016-6738 是我们发现的高通加解密引擎（Qualcomm crypto engine）的两个提权漏洞
@@ -153,25 +204,19 @@ Linux内核的内存子系统在处理写时拷贝（Copy-on-Write)时存在条�
 [CVE-2016-5342 - Heap-based buffer overflow in the wcnss_wlan_write function](qualcomm/CVE-2016-5342)
 
 #### CVE-2017-8890
- 条件竞争漏洞
+条件竞争漏洞: https://bbs.pediy.com/thread-249193.htm
+[CVE-2017-8890 深度分析](https://bbs.pediy.com/thread-226057.htm)
 
 #### SVE-2017-10086* [SVE-2017-10086 - PoC exploit for arbitrary file read/write in locked Samsung Android device via MTP](samsung/SVE-2017-10086)
 
 
-----------------------------------------------------------------------------
-Android 2.*时代,vold有多个溢出漏洞,都被用来exploit和poc.
+#### CVE-2017-10661
 
-Android 4.*时代,大部分的exploit都盯上了内核中的堆栈溢出和整数溢出等.
+[链表游戏：CVE-2017-10661之完全利用](https://www.anquanke.com/post/id/129468#h2-3)
 
-Android 5.*以后,更强悍的SELinux策略,想通过kernel漏洞提取更加困难.
 
-KASLR：
 
-PXN：
 
-PAN：
-
-CFI：
-
-----------
+参考：
+https://blog.csdn.net/py_panyu/article/details/46045295
 
