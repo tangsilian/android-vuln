@@ -1,0 +1,6 @@
+*.o
+*~
+mtpwn
+*.tar.gz
+*.tgz
+*.pdf

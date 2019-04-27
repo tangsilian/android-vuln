@@ -1,44 +1,8 @@
+
+
 # Android_kernel_Vul
 
-
-         * [0x00 常见内核漏洞分析]()
-            * [Zimperlich]()
-            * [CVE-2009-2692(Wunderbar/asroot)]()
-            * [RageAgainstTheCage(adbd setuid)]()
-            * [CVE-2009-1185 Exploid]()
-            * [CVE-2009-2692(Wunderbar/asroot)]()
-            * [CVE-2011-1149  KillingInTheNameOf]()
-            * [CVE-2011-1823(GingerBreak)]()
-            * [CVE-2011-3874(zergRush)]()
-            * [CVE-2011-1823(GingerBreak)]()
-            * [Exynos-abuse]()
-            * [CVE-2012-0056(mempodroid)]()
-            * [CVE-2012-4220(diag)]()
-            * [CVE-2012-6422 exynos-mem]()
-            * [CVE-2013-2094(linux kernel3.8.9之前开启了PERF_EVENT的设备)]()
-            * [CVE-2013-2595]()
-            * [CVE-2013-6282]()
-            * [CVE-2013-6123]()
-            * [CVE-2013-6282]()
-            * [CVE-2013-6774]()
-            * [CVE-2014-0196]()
-            * [CVE-2014-2273]()
-            * [CVE-2014-3153]()
-            * [CVE-2014-4321]()
-            * [CVE-2014-4322]()
-            * [CVE-2014-4323]()
-            * [CVE-2014-4324]()
-            * [CVE-2014-7911 CVE-2014-4322 配套使用的root]()
-            * [CVE-2014-0975 CVE-2014-0976]()
-            * [CVE-2014-9322]()
-            * [CVE-2015-0569]()
-            * [CVE-2015-1805]()
-            * [CVE-2015-3636]()
-            * [CVE-2016-2434]()
-            * [CVE-2016-2443]()
-            * [CVE-2016-3935 CVE-2016-6738]()
-            * [CVE-2016-5195]()
-            * [CVE-2017-8890]()
+[TOC]
 
 
 ### 0x00 常见内核漏洞分析
@@ -122,11 +86,14 @@ https://blog.csdn.net/py_panyu/article/details/45565449
 漏洞利用了 futex_requeue,futex_lock_pi,futex_wait_requeue_pi三个函数存在的RELOCK漏洞和REQUEUE漏洞,造成了对内核栈上的数据修改,知名root工具towelroot就是利用了这个漏洞可以覆盖2014年6月以前的设备.
 
 #### CVE-2014-4321
+[CVE-2016-2431 - The Qualcomm TrustZone component in Android before 2016-05-01 on Nexus 5, Nexus 6, Nexus 7 (2013), and Android One devices allows attackers to gain privileges via a crafted application, aka internal bug 24968809](qualcomm/CVE-2016-2431)
 
 #### CVE-2014-4322
+[CVE-2014-4322-qseecom内存破坏漏洞分析](http://ele7enxxh.com/Memory-Corruption-Qseecom-Driver-CVE-2014-4322-Analysis.html)
+
 
 #### CVE-2014-4323
-https://bbs.pediy.com/thread-248498.htm
+Linux内核3.x的MDP显示驱动程序中的[drivers / video / msm / mdp.c](https://bbs.pediy.com/thread-248498.htm)中的mdp_lut_hw_update函数，用于Qualcomm Innovation Center（QuIC）Android对MSM设备和其他产品的贡献，不会验证某些启动和ioctl调用中的长度值，允许攻击者通过精心设计的应用程序获得权限提升。
 
 #### CVE-2014-4324
 
@@ -141,8 +108,12 @@ https://researchcenter.paloaltonetworks.com/2015/01/cve-2014-7911-deep-dive-anal
 
 #### CVE-2014-0975 CVE-2014-0976
 
+Multiple Issues in Camera Drivers
+https://www.codeaurora.org/projects/security-advisories/hall-of-fame
+
 #### CVE-2014-9322
 https://hardenedlinux.github.io/system-security/2015/07/05/badiret-analysis.html
+
 
 #### CVE-2015-0569
 https://bbs.pediy.com/thread-208066.htm
@@ -156,8 +127,11 @@ https://bbs.pediy.com/thread-208066.htm
 pingpong该漏洞是Linux kernel的ping套接字上存在的一个Use-After-Free漏洞。
 https://github.com/fi01/CVE-2015-3636  32位
 
+
+
 #### CVE-2016-2434
 Android 2016-05-01版本，NVIDIA Video Driver存在权限提升漏洞，攻击者通过构造的应用，可获取提升的权限。
+
 
 #### CVE-2016-2443
 Qualcomm MSM debugfs内核任意地址写入漏洞分析  
@@ -175,11 +149,13 @@ https://paper.seebug.org/372/
 CVE-2016-5195脏牛（Dirty COW）低权限用户利用该漏洞技术可以在全版本Linux系统上实现本地提权  
 Linux内核的内存子系统在处理写时拷贝（Copy-on-Write)时存在条件竞争漏洞，导致可以破坏私有只读内存映射。一个低权限的本地用户能够利用此漏洞获取其他只读内存映射的写权限，有可能进一步导致提权漏洞。
 
+#### CVE-2016-5342 
+[CVE-2016-5342 - Heap-based buffer overflow in the wcnss_wlan_write function](qualcomm/CVE-2016-5342)
 
 #### CVE-2017-8890
  条件竞争漏洞
 
-
+#### SVE-2017-10086* [SVE-2017-10086 - PoC exploit for arbitrary file read/write in locked Samsung Android device via MTP](samsung/SVE-2017-10086)
 
 
 ----------------------------------------------------------------------------
